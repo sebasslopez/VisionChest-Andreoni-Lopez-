@@ -1,16 +1,15 @@
 from typing import TYPE_CHECKING
 import pygame
 
+Board: 
 
 if TYPE_CHECKING:
-    import VisionChest
-    import gui.screen.screen as SCREEN
+    import VisionChest as vision
+    import gui.screen.screen as screen
 
-class menuScreen(SCREEN.Screen):
-    vision: VisionChest.VisionChest = VisionChest.VisionChest.geInstance()
+class boardScreen(screen.Screen):
     def __init__(self, width: int, height: int):
         super().__init__(width, height, None)
-        
 
     def handle_event(self, event: pygame.event.Event):
         pass
@@ -24,6 +23,4 @@ class menuScreen(SCREEN.Screen):
         pygame.display.flip()
 
     def handleKeyPress(self,key: int):
-        if(key == pygame.K_ESCAPE and self.vision.getScreen != None): self.vision.setScreen(menuScreen(self.width,self.height))
-        elif(key == pygame.K_LEFT and self.vision.getScreen != None): self.vision.setScreen(SCREEN.Screen(self.width, self.height, self))
         super().handleKeyPress(self,key)

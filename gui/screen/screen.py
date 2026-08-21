@@ -3,7 +3,7 @@ import pygame
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    import VisionChest as vision
+    import VisionChest
     import gui.screen.menuScreen as menuScreen
 
 class Screen():
