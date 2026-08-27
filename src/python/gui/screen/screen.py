@@ -2,11 +2,10 @@ from __future__ import annotations
 import pygame
 
 class Screen():
-    def __init__(self, width:int, height:int, last_screen: Screen | None = None):
-        self.width = width
-        self.height = height
+    def __init__(self, size:tuple[int,int], last_screen: Screen | None = None):
+        self.screenSize = (size[0],size[1])
         self.last_screen = last_screen
-        import VisionChest
+        import VisionChest as VisionChest
         self.vision = VisionChest.VisionChest.getInstance()
 
     def handle_event(self, event: pygame.event.Event):
@@ -17,13 +16,19 @@ class Screen():
         window.fill((0, 0, 255))
         pass
 
-    def update(self, window: pygame.Surface):
+    def update(self, window: pygame.Surface,size:tuple[int,int]):
+        self.clear(window)
         self.display(window)
+        self.width = size[0]
+        self.height = size[1]
         pygame.display.flip()
+
+    def clear(self, window: pygame.Surface):
+        window.fill((0,0,0))
 
     def handleKeyPress(self,key: int):
         if(key == pygame.K_ESCAPE and self.last_screen != None):self.vision.setScreen(self.last_screen)
         elif(key == pygame.K_RIGHT):
-            from gui.screen.MenuScreen import menuScreen
-            self.vision.setScreen(menuScreen(self.width, self.height))
+            from gui.screen.menuScreen import menuScreen
+            self.vision.setScreen(menuScreen(self.screenSize))
         pass
