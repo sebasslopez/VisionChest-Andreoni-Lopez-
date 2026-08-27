@@ -1,13 +1,10 @@
-from typing import TYPE_CHECKING
 import pygame
+from chess import Board as boar
+from gui.screen.Screen import Screen
 
-Board: 
-
-if TYPE_CHECKING:
-    import VisionChest as vision
-    import gui.screen.screen as screen
-
-class boardScreen(screen.Screen):
+Board: boar.Board = boar.Board()
+    
+class boardScreen(Screen):
     def __init__(self, width: int, height: int):
         super().__init__(width, height, None)
 
@@ -15,7 +12,7 @@ class boardScreen(screen.Screen):
         pass
 
     def display(self, window: pygame.Surface):
-        window.fill((0, 255, 255))
+        window.fill((0, 255, 255),(0,0,15,15))
         pass
 
     def update(self, window: pygame.Surface):
@@ -23,4 +20,4 @@ class boardScreen(screen.Screen):
         pygame.display.flip()
 
     def handleKeyPress(self,key: int):
-        super().handleKeyPress(self,key)
+        super().handleKeyPress(key)

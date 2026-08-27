@@ -1,16 +1,13 @@
 from __future__ import annotations
 import pygame
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    import VisionChest
-    import gui.screen.menuScreen as menuScreen
 
 class Screen():
     def __init__(self, width:int, height:int, last_screen: Screen | None = None):
         self.width = width
         self.height = height
         self.last_screen = last_screen
+        import VisionChest
+        self.vision = VisionChest.VisionChest.getInstance()
 
     def handle_event(self, event: pygame.event.Event):
         if(event.type == pygame.KEYDOWN): self.handleKeyPress(event.key)
@@ -25,6 +22,8 @@ class Screen():
         pygame.display.flip()
 
     def handleKeyPress(self,key: int):
-        if(key == pygame.K_ESCAPE and self.last_screen != None):vision.setScreen(self.last_screen)
-        elif(key == pygame.K_RIGHT):vision.setScreen(menuScreen.menuScreen(self.width, self.height))
+        if(key == pygame.K_ESCAPE and self.last_screen != None):self.vision.setScreen(self.last_screen)
+        elif(key == pygame.K_RIGHT):
+            from gui.screen.MenuScreen import menuScreen
+            self.vision.setScreen(menuScreen(self.width, self.height))
         pass
