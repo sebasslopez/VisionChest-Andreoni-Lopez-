@@ -10,6 +10,7 @@ class Screen():
 
     def handle_event(self, event: pygame.event.Event):
         if(event.type == pygame.KEYDOWN): self.handleKeyPress(event.key)
+        elif(event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]): self.handleMouseClick(event.pos)
         pass
 
     def display(self, window: pygame.Surface):
@@ -27,8 +28,11 @@ class Screen():
         window.fill((0,0,0))
 
     def handleKeyPress(self,key: int):
-        if(key == pygame.K_ESCAPE and self.last_screen != None):self.vision.setScreen(self.last_screen)
+        if(key == pygame.K_ESCAPE and self.last_screen != None):self.vision.stop()
         elif(key == pygame.K_RIGHT):
             from gui.screen.menuScreen import menuScreen
             self.vision.setScreen(menuScreen(self.screenSize))
+        pass
+
+    def handleMouseClick(self,rect:tuple[int,int]):
         pass

@@ -1,28 +1,32 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 import pygame
 from utils.ResourceLocation import getImage
 from typing import TYPE_CHECKING
+from ..Position import Position
+from ..Color import Color
 if TYPE_CHECKING:
-    from chess import Position,Board,Color
+    from chess.Board import Board
+    from ..Box import Box
+    
 
 class Piece(ABC):
-    def __init__(self, color: "Color.Color", position: "Position.Position"):
-        self.color:"Color.Color" = color
+    def __init__(self, color: Color, position: Position):
+        self.color: Color = color
         self.position = position
         self.hasMoved = False
         self.isCaptured = False
     
     @abstractmethod
-    def getPossibleMoves(self, board: "Board.Board") -> list["Position.Position"]:
+    def getPossibleMoves(self, board: Board) -> list[Position]:
         return []
 
-    def isMoveValid(self, newPosition: "Position.Position", board: "Board.Board") -> bool:
-            moves:list["Position.Position"] = self.getPossibleMoves(board)
+    def isMoveValid(self, newPosition: Position, board: Board) -> bool:
+            moves:list[Position] = self.getPossibleMoves(board)
             return newPosition in moves
     
-    def move(self, newPosition: "Position.Position", board: "Board.Board"):
+    def move(self, box: Box, board: Board):
         self.hasMoved = True
-        box = board.getBox(newPosition)
         if(box.isEmpty() or box.piece == None):
             box.setPiece(self)
         else:
@@ -30,7 +34,7 @@ class Piece(ABC):
             box.setPiece(self)
         pass
 
-    def capture(self,board: "Board.Board"):
+    def capture(self,board: Board):
         self.isCaptured = True
         board.capturedPieces.append(self)
 
@@ -40,7 +44,7 @@ class Piece(ABC):
         return self.color == otherPiece.color
 
     def getTexture(self) -> pygame.Surface:
-        return getImage(f"{self.color}_{self.__class__.__name__.lower()}")
+        return getImage(f"{self.color.name.removeprefix("Color.").lower()}_{self.__class__.__name__.lower()}")
 
-    def getOpositeColor(self) -> Color.Color:
-        return Color.Color.WHITE if self.color == Color.Color.BLACK else Color.Color.BLACK
+    def getOpositeColor(self) -> Color:
+        return Color.WHITE if self.color == Color.BLACK else Color.BLACK

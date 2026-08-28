@@ -1,34 +1,39 @@
+from __future__ import annotations
 from .Piece import Piece
 
 from typing import TYPE_CHECKING
+from ..Position import Position
+from ..Color import Color
 if TYPE_CHECKING:
-    from .. import Position,Board,Color
+    from chess.Board import Board
 
 class Rook(Piece):
-    def __init__(self, color: Color.Color, position: Position.Position):
+    def __init__(self, color: Color, position: Position):
             super().__init__(color, position)
     
-    def getPossibleMoves(self, board: "Board.Board") -> list["Position.Position"]:
-        moves:list["Position.Position"] = []
+    def getPossibleMoves(self, board: Board) -> list[Position]:
+        moves:list[Position] = []
         dirs = [1,-1]
         OGpos = self.position.getXYPosition()
         pos = OGpos
         for i in dirs:
-            pos = Position.Position(OGpos[0]+i,OGpos[1])
+            pos = Position(OGpos[0]+i,OGpos[1])
             box = board.getBox(pos)
-            while pos.isInside() and box.isEmpty():
+            while box != None and pos.isInside() and box.isEmpty():
                 moves.append(pos)
-                pos = Position.Position(pos.getXYPosition()[0]+i,OGpos[1])
+                pos = Position(pos.getXYPosition()[0]+i,OGpos[1])
                 box = board.getBox(pos)
+            if(box == None): return moves
             if(pos.isInside() and not self.isTeamMate(box.piece)):
                  moves.append(pos)
         for i in dirs:
-                    pos = Position.Position(OGpos[0],OGpos[1]+i)
+                    pos = Position(OGpos[0],OGpos[1]+i)
                     box = board.getBox(pos)
-                    while pos.isInside() and box.isEmpty():
+                    while box != None and pos.isInside() and box.isEmpty():
                         moves.append(pos)
-                        pos = Position.Position(OGpos[0],pos.getXYPosition()[1]+i)
+                        pos = Position(OGpos[0],pos.getXYPosition()[1]+i)
                         box = board.getBox(pos)
+                    if(box == None): return moves
                     if(pos.isInside() and not self.isTeamMate(box.piece)):
                          moves.append(pos)
         return moves

@@ -1,18 +1,16 @@
 import pygame
-from ...chess import Board as boar
+from chess import Board as boar
 from .screen import Screen
 
-Board: boar.Board = boar.Board()
+
     
 class boardScreen(Screen):
     def __init__(self, size:tuple[int,int]):
         super().__init__(size, None)
-
-    def handle_event(self, event: pygame.event.Event):
-        pass
+        self.Board: boar.Board = boar.Board()
 
     def display(self, window: pygame.Surface):
-        window.fill((0, 255, 255),(0,0,15,15))
+        self.Board.display(window)
         pass
 
     def update(self, window: pygame.Surface,size:tuple[int,int]):
@@ -22,3 +20,7 @@ class boardScreen(Screen):
 
     def handleKeyPress(self,key: int):
         super().handleKeyPress(key)
+
+    def handleMouseClick(self,rect:tuple[int,int]):
+        self.Board.verifyClick(rect)
+        pass
