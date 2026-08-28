@@ -1,5 +1,5 @@
 import pygame
-from gui.screen.screen import Screen
+from .screen import Screen
 
 
 class menuScreen(Screen):

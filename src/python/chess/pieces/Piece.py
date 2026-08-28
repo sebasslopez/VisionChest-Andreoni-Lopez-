@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+import pygame
+from utils.ResourceLocation import getImage
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from chess import Position,Board,Color
@@ -9,30 +11,36 @@ class Piece(ABC):
         self.position = position
         self.hasMoved = False
         self.isCaptured = False
-        self.boxColor = 0xFFFFFF #llamaria a un metodo que devuelva el color del cuadro de una posicion del tablero, segun si el mapa está al reves o no.
-
-    @abstractmethod
-    def canMove(self, newPosition: "Position.Position", board: "Board.Board") -> bool:
-        return False
-
+    
     @abstractmethod
     def getPossibleMoves(self, board: "Board.Board") -> list["Position.Position"]:
         return []
 
-    @abstractmethod
     def isMoveValid(self, newPosition: "Position.Position", board: "Board.Board") -> bool:
-        return False
-
-    @abstractmethod
+            moves:list["Position.Position"] = self.getPossibleMoves(board)
+            return newPosition in moves
+    
     def move(self, newPosition: "Position.Position", board: "Board.Board"):
         self.hasMoved = True
+        box = board.getBox(newPosition)
+        if(box.isEmpty() or box.piece == None):
+            box.setPiece(self)
+        else:
+            box.piece.capture(board)
+            box.setPiece(self)
         pass
 
-    def capture(self):
+    def capture(self,board: "Board.Board"):
         self.isCaptured = True
+        board.capturedPieces.append(self)
 
-    def isTeamMate(self, otherPiece: "Piece") -> bool:
+    def isTeamMate(self, otherPiece: "Piece | None") -> bool:
+        if otherPiece == None:
+            return False
         return self.color == otherPiece.color
 
-    def getTexture(self) -> str:
-        return f"{self.color}_{self.__class__.__name__.lower()}.png"
+    def getTexture(self) -> pygame.Surface:
+        return getImage(f"{self.color}_{self.__class__.__name__.lower()}")
+
+    def getOpositeColor(self) -> Color.Color:
+        return Color.Color.WHITE if self.color == Color.Color.BLACK else Color.Color.BLACK

@@ -1,6 +1,6 @@
 import pygame
-from chess import Board as boar
-from gui.screen.screen import Screen
+from ...chess import Board as boar
+from .screen import Screen
 
 Board: boar.Board = boar.Board()
     
