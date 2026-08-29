@@ -33,7 +33,7 @@ class King(Piece):
         for piece in board.getOpositePieces(color):
              for pos in piece.getPossibleMoves(board):
                 if pos.isTheSame(position):
-                    return False
-        return True
+                    return True
+        return False
 
     

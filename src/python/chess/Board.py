@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .pieces.Piece import Piece
 
 class Board:
-    def __init__(self):
+    def __init__(self,flag:bool):
         self.boxes:list[Box] = []
         self.Pieces:list[Piece] = []
         self.board:list[list[Box]] = self.createBoard(False)
@@ -22,7 +22,10 @@ class Board:
         self.isUpsideDown = False
         self.isSelected = False
         self.SelectedBox = None
-        self.previewBoard = self.copyBoard()
+        self.finished = False
+        self.kings:list[King] = []
+        self.kingsBox:list[Box] = self.getKings()
+        if flag: self.previewBoard = self.copyBoard()
 
     
 
@@ -89,6 +92,7 @@ class Board:
         return None
 
     def verifyClick(self,rect:tuple[int,int]):
+        if self.finished: return
         b = self.getClickedBox(rect)
         if(b == None): return
         if(not self.isSelected):
@@ -97,31 +101,60 @@ class Board:
             self.isSelected = True
             self.previewBoard.board = b.makePreviewBoard(self.previewBoard)
         else:
-            if(b.piece == None or self.SelectedBox == None or self.SelectedBox.piece == None): return
-            if((b.isEmpty() or (b.isoccupied() and not self.SelectedBox.piece.isTeamMate(b.piece))) and b.piece.isMoveValid(b.position,self)):
+            if(self.SelectedBox == None or self.SelectedBox.piece == None): return
+            if((b.isEmpty() or (b.isoccupied() and not self.SelectedBox.piece.isTeamMate(b.piece))) and self.SelectedBox.piece.isMoveValid(b.position,self)):
                 self.SelectedBox.piece.move(b,self)
+                self.SelectedBox.clearPiece()
                 self.SelectedBox = None
                 self.isSelected = False
                 self.previewBoard = self.copyBoard()
-            elif(b.isoccupied() and b.piece.isTeamMate(self.SelectedBox.piece)):
+                if self.checkFinished(): 
+                    self.finished = True
+                    print("JUEGO FINALIZADO!!!!!!!")
+            elif(b.piece != None and b.isoccupied() and b.piece.isTeamMate(self.SelectedBox.piece)):
                 self.previewBoard = self.copyBoard()
                 self.SelectedBox = b
                 self.isSelected = True
                 self.previewBoard.board = b.makePreviewBoard(self.previewBoard)
 
+
+    def getKings(self):
+        l: list[Box] = []
+        for b in self.boxes:
+            if(isinstance(b.piece,King)): 
+                l.append(b)
+                self.kings.append(b.piece)
+        return l
+
+    def checkFinished(self):
+        return self.kings[0].isCheckMate(self) or self.kings[1].isCheckMate(self) or self.londonBridgeFellDown() or self.checkQuantity()
+
+    def londonBridgeFellDown(self):
+        return self.kings[0].isCaptured or self.kings[1].isCaptured
+
+    def checkQuantity(self):
+        return not self.getOpositePieces(Color.WHITE) or not self.getOpositePieces(Color.BLACK)
+    
     def copyBoard(self) -> Board:
-        bor: Board = Board()
+        bor: Board = Board(False)
+        bor.board = []
+        bor.boxes = []
+        bor.capturedPieces = []
+        bor.Pieces = []
         for s in self.board:
-            bor.board.append(s)
+            row: list[Box] = []
+            for t in s:
+                b = Box(t.piece,t.COLOROG,t.position)
+                row.append(b)
+                bor.boxes.append(b)
+            bor.board.append(row)
         for s in self.Pieces:
                     bor.Pieces.append(s)
         for s in self.capturedPieces:
                     bor.capturedPieces.append(s)
-        for s in self.boxes:
-                    bor.boxes.append(s)
         bor.isUpsideDown = self.isUpsideDown
         bor.isSelected = self.isSelected
-        bor.SelectedBox = self.isSelected
+        bor.SelectedBox = self.SelectedBox
         return bor
             
 

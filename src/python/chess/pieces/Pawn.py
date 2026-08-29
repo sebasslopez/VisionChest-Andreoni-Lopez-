@@ -30,7 +30,7 @@ class Pawn(Piece):
             pos = Position(OGpos[0]+dir*2,OGpos[1])
             box = board.getBox(pos)
             if(box == None): return moves
-            if(pos.isInside() and box.isEmpty() and self.hasMoved):
+            if(pos.isInside() and box.isEmpty() and not self.hasMoved):
                 moves.append(pos)
         else:
             for i in dirs:

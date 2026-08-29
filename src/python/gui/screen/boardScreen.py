@@ -7,7 +7,7 @@ from .screen import Screen
 class boardScreen(Screen):
     def __init__(self, size:tuple[int,int]):
         super().__init__(size, None)
-        self.Board: boar.Board = boar.Board()
+        self.Board: boar.Board = boar.Board(True)
 
     def display(self, window: pygame.Surface):
         self.Board.display(window)

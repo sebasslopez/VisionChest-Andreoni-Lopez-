@@ -29,9 +29,11 @@ class Piece(ABC):
         self.hasMoved = True
         if(box.isEmpty() or box.piece == None):
             box.setPiece(self)
+            self.position = box.position
         else:
             box.piece.capture(board)
             box.setPiece(self)
+            self.position = box.position
         pass
 
     def capture(self,board: Board):

@@ -24,6 +24,10 @@ class Position:
     def isTheSame(self,pos: "Position") -> bool:
         return pos.getXYPosition()[0] == self.getXYPosition()[0] and pos.getXYPosition()[1] == self.getXYPosition()[1]
 
+    def __eq__(self,other:object):
+        return isinstance(other,Position) and self.isTheSame(other)
+
+
     @staticmethod
     def getWidth() ->int:
         return 100
